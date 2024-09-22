@@ -6,11 +6,18 @@ const mime = require('mime-types');
 const app = express();
 const PORT = process.env.PORT || 4000;
 
+// Enable CORS to allow cross-origin requests
 app.use(cors());
+
 app.use(bodyParser.json({ limit: '10mb' }));
 
 app.get("/", (req, res) => {
   res.json({ msg: "try endpoint /bfhl" });
+});
+
+// GET endpoint
+app.get("/bfhl", (req, res) => {
+  res.status(200).json({ operation_code: 1 });
 });
 
 // POST endpoint

@@ -13,22 +13,13 @@ app.get("/", (req, res) => {
   res.json({ msg: "try endpoint /bfhl" });
 });
 
-// This is theGET endpoint
-app.get("/bfhl", (req, res) => {
-  res.status(200).json({ operation_code: 1 });
-});
-
-// This is the POST endpoint
+// POST endpoint
 app.post("/bfhl", (req, res) => {
   try {
-    const { data, file_b64 } = req.body;
+    const { data, file_b64, file_name } = req.body;  // Added file_name for MIME detection
 
     if (!Array.isArray(data) || data.length === 0) {
       return res.status(400).json({ is_success: false, error: "Invalid input format" });
-    }
-
-    if (data.some(item => typeof item !== 'string')) {
-      return res.status(400).json({ is_success: false, error: "All items in data array must be strings" });
     }
 
     const numbers = data.filter((item) => !isNaN(item));
@@ -45,7 +36,14 @@ app.post("/bfhl", (req, res) => {
       try {
         const buffer = Buffer.from(file_b64, 'base64');
         fileValid = true;
-        fileMimeType = mime.lookup(buffer) || "application/octet-stream";
+
+        // Use the file_name for better MIME type detection
+        if (file_name) {
+          fileMimeType = mime.lookup(file_name) || "application/octet-stream";
+        } else {
+          fileMimeType = "application/octet-stream";  // Fallback if no file_name is provided
+        }
+
         fileSizeKb = (buffer.length / 1024).toFixed(2);
       } catch (error) {
         console.error("Error processing file:", error);

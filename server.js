@@ -7,7 +7,9 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 
 // Enable CORS to allow cross-origin requests
-app.use(cors());
+app.use(cors({
+  origin: 'https://bajaj-font-9plq7e0aw-syamkarnis-projects.vercel.app'  // Frontend URL
+}));
 
 app.use(bodyParser.json({ limit: '10mb' }));
 
